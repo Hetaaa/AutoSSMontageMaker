@@ -95,6 +95,7 @@ for x in range(len(vidList)):
     # if fullfight is enabled cut the fight part from video using marks
     if fullfight == 1:
         cutClip = currentClip.subclip(FightStartTimer,FightEndTimer).fx(vfx.fadein, 0.3).fx(vfx.fadeout, 0.3)
+        cutClip.audio = cutClip.audio.fx(afx.audio_fadein, 0.3).fx(afx.audio_fadeout, 0.3)
         finalVidCuts.append(cutClip)
         FightStartTimer = 0
         FightEndTimer = 0
@@ -123,7 +124,8 @@ while finalClipLenght > currentAudioDuration:
         #loop the counter
         audioCounter = 0
 
-    audioClip = AudioFileClip(audioList[audioCounter]).fx(afx.audio_fadein, 0.3).fx(afx.audio_fadeout, 0.3)
+    fullFinalAudioPath = os.path.join(os.path.join(os.getcwd(),"music",audioList[audioCounter]))
+    audioClip = AudioFileClip(fullFinalAudioPath).fx(afx.audio_fadein, 0.3).fx(afx.audio_fadeout, 0.3)
     #add time to duration counter
     currentAudioDuration = currentAudioDuration + audioClip.duration
     audioCounter =  audioCounter + 1
@@ -140,7 +142,7 @@ finalAudioClip = concatenate_audioclips(finalAudioList)
 CombinedfinalAudioClip = CompositeAudioClip([finalClip.audio, finalAudioClip])
 finalClip.audio = CombinedfinalAudioClip
 
-finalClip.write_videofile(outputDirectory, codec='mpeg4', fps='30')
+finalClip.write_videofile(outputDirectory, codec='libx264', fps=30, bitrate='5000000')
 
 
 
