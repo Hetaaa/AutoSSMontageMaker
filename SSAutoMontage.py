@@ -18,7 +18,7 @@ vidList = [f for f in os.listdir(os.path.join(os.getcwd(),"videos")) if os.path.
 
 
 #list for words to indicate fight
-wordsToChceck =["3, 2, 1", "5, 4, 3", "4, 3, 2", "five, four", "four, three", "three, two", "two, one", "5-4", "4-3", "3-2", "2-1", "five four", "four three", "three two", "two one"]
+wordsToChceck =["3, 2, 1", "5, 4, 3", "4, 3, 2", "five, four", "four, three", "three, two", "two, one", "5-4", "4-3", "3-2", "2-1", "five four", "four three", "three two", "two one", "54", "43", "32", "21", "four, D" "four D", "4 D", "D two", "D 2", "D, 2", "3, too", "three too", "three, too", "3 too"]
 
 
 FightStartTimer = 0
@@ -27,7 +27,6 @@ FightStartIndicator = 0
 finalVidCuts = []
 
 r = sr.Recognizer()
-
 
 #for evety file in directory
 for x in range(len(vidList)):
@@ -57,11 +56,10 @@ for x in range(len(vidList)):
         fullAudioPath = os.path.join(os.path.join(os.getcwd(),"temp","audio",tempAudioList[z]))
         with sr.AudioFile(fullAudioPath) as source:
             audio = r.record(source)
-
         print('Analyzing Audio from video '+ str(x) + ' subclip ' + str(z))
         #analyze audio
         try:
-            text = r.recognize_whisper(audio, language="english")
+            text = r.recognize_whisper(audio, language="english", model='base.en')
         except sr.UnknownValueError:
             print("Sphinx could not understand audio")
         except sr.RequestError as e:
@@ -88,8 +86,6 @@ for x in range(len(vidList)):
         os.remove(os.path.join(dir, f))
 
 
-    print(FightStartTimer)
-    print(FightEndTimer)
 
     
     # if fullfight is enabled cut the fight part from video using marks
@@ -142,7 +138,7 @@ finalAudioClip = concatenate_audioclips(finalAudioList)
 CombinedfinalAudioClip = CompositeAudioClip([finalClip.audio, finalAudioClip])
 finalClip.audio = CombinedfinalAudioClip
 
-finalClip.write_videofile(outputDirectory, codec='libx264', fps=30, bitrate='5000000')
+finalClip.write_videofile(outputDirectory)
 
 
 
